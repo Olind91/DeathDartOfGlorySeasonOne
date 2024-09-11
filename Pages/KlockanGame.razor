@@ -1,0 +1,202 @@
+﻿@page "/klockan"
+@inject PlayerService PlayerService
+@inject DartContext _context
+
+
+
+<div class="container">
+    <h1 class="title">DAS UHR</h1>
+
+    @if (klockanGamePlayers == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(winnerMessage))
+        {
+            <p class="winnerWinnerChickenDinner">@winnerMessage</p>
+        }
+
+        
+
+        <div class="player-cards">
+            @foreach (var gamePlayer in klockanGamePlayers)
+            {
+                @if (IsPlayerSelected(gamePlayer.PlayerId))
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>@gamePlayer.Player.Name</h4>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Current Number:</strong> @gamePlayer.CurrentNumber</p>
+                            <p><strong>Attempts:</strong> @gamePlayer.Attempts</p>
+                            <div class="buttons">
+                                <button class="unoPoint" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Single")'>+1 Single</button>
+                                <button class="dosPoints" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Double")'>+2 Double</button>
+                                <button class="tresPoints" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Triple")'>+3 Triple</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="player-selection">
+            <h3>Välj spelare:</h3>
+            @foreach (var gamePlayer in klockanGamePlayers)
+            {
+                <div>
+                    <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
+                    @gamePlayer.Player.Name
+                </div>
+            }
+        </div>
+    }
+    <a href="/">Tillbaka</a>
+</div>
+
+
+
+@code {
+    private List<KlockanGamePlayer> klockanGamePlayers;
+    private string winnerMessage = string.Empty; 
+    private List<int> selectedPlayerIds = new List<int>(); // Lista med valda spelare
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Hämta alla spelare från din PlayerService
+        var players = await PlayerService.GetAllPlayersAsync();
+
+        // Mappa spelare till KlockanGamePlayers (anpassa detta efter din data)
+        klockanGamePlayers = players.Select(player => new KlockanGamePlayer
+            {
+                PlayerId = player.Id,
+                Player = player, // Koppla din Player-objekt till KlockanGamePlayer
+                CurrentNumber = 0,
+                Attempts = 0
+            }).ToList();
+    }
+
+    // Metod för att registrera träff baserat på vilken knapp som trycks
+    private void RegisterHit(int playerId, string hitType)
+    {
+        var gamePlayer = klockanGamePlayers.FirstOrDefault(p => p.PlayerId == playerId);
+
+        if (gamePlayer != null)
+        {
+            switch (hitType)
+            {
+                case "Single":
+                    gamePlayer.CurrentNumber += 1;
+                    break;
+                case "Double":
+                    gamePlayer.CurrentNumber += 2;
+                    break;
+                case "Triple":
+                    gamePlayer.CurrentNumber += 3;
+                    break;
+            }
+
+            // Öka antalet försök
+            gamePlayer.Attempts += 1;
+
+            // Kontrollera om spelaren har nått 21 poäng
+            if (gamePlayer.CurrentNumber >= 21)
+            {
+                winnerMessage = $"Hurra för {gamePlayer.Player.Name}, du är dartmästare!!!!!";
+            }
+
+            // Uppdatera UI
+            StateHasChanged();
+        }
+    }
+
+    private void TogglePlayer(int playerId)
+    {
+        if (selectedPlayerIds.Contains(playerId))
+        {
+            selectedPlayerIds.Remove(playerId);
+        }
+        else
+        {
+            selectedPlayerIds.Add(playerId);
+        }
+    }
+
+    private bool IsPlayerSelected(int playerId)
+    {
+        return selectedPlayerIds.Contains(playerId);
+    }
+}
+
+
+<style>
+    .container {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .player-selection {
+        margin-bottom: 20px;
+    }
+
+        .player-selection input {
+            margin-right: 10px;
+        }
+
+    .card {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .card-header h4 {
+        margin: 0;
+        font-size: 1.2em;
+        color: #333;
+    }
+
+    .card-body p {
+        margin: 10px 0;
+        font-size: 1em;
+        color: #666;
+    }
+
+    .buttons button {
+        color: white;
+        padding: 10px;
+        margin: 5px 0;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+        font-size: 1em;
+        text-align: center;
+    }
+
+    .unoPoint {
+        background-color: darkolivegreen; /* Grön */
+    }
+
+    .dosPoints {
+        background-color: darkred; /* Röd */
+    }
+
+    .tresPoints {
+        background-color: black; /* Svart */
+    }
+
+
+   
+</style>

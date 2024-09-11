@@ -1,0 +1,60 @@
+﻿@page "/players"
+
+@inject PlayerService PlayerService
+
+<div class="container">
+    <div class="form-container">
+        <a href="/">Tillbaka</a>
+        <h3>Add Player</h3>
+
+        <EditForm Model="newPlayer" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label>Name:</label>
+                <InputText @bind-Value="newPlayer.Name" class="form-control" placeholder="Enter player name" />
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Add Player</button>
+        </EditForm>
+    </div>
+
+    <div class="scores-container">
+        <h3>Players List</h3>
+
+        @if (players == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var player in players)
+                {
+                    <li>@player.Name</li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Player>? players;
+
+    protected override async Task OnInitializedAsync()
+    {
+        players = await PlayerService.GetAllPlayersAsync();
+    }
+
+    private Player newPlayer = new Player();
+
+    private async Task HandleValidSubmit()
+    {
+        await PlayerService.AddPlayerAsync(newPlayer);
+        // Återställ formuläret eller hämta alla spelare igen
+        newPlayer = new Player(); // Återställ inputfältet efter inmatning
+        players = await PlayerService.GetAllPlayersAsync(); // Uppdatera listan med nya spelaren
+    }
+}

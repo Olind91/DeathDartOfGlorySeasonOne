@@ -1,0 +1,171 @@
+﻿@page "/"
+@inject PlayerService PlayerService
+@inject DartContext _context
+
+<div class="container">
+    <div class="form-container">
+        <form @onsubmit="HandleSubmit" @onsubmit:preventDefault>
+            <h3>Register Match</h3>
+            <div class="form-group">
+                <label>Date:</label>
+                <input type="date" @bind="match.Date" placeholder="Select date" />
+            </div>
+
+            <div class="form-group">
+                <label>Number of Games:</label>
+                <input type="number"
+                       value="@((match.NumberOfGames == 0 ? "" : match.NumberOfGames.ToString()))"
+                       min="1"
+                       placeholder="Enter number of games"
+                       @onchange="OnNumberOfGamesChanged" />
+            </div>
+
+
+
+            <div class="form-group">
+                <label>Points earned:</label>
+                @if (players != null && players.Any())
+                {
+                    @foreach (var playerScore in match.PlayerScores)
+                    {
+                        <div class="player-score-input">
+                            <label>@playerScore.Player.Name</label>
+                            <input type="number" @bind="playerScore.Score" @bind:event="onchange" placeholder="Enter score" min="0" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>Loading players...</p>
+                }
+            </div>
+
+            <button type="submit">Register Match</button>
+        </form>
+    </div>
+
+    <div class="scores-container">
+        <h3>Player Scores</h3>
+        @if (playersWithTotalScores != null && playersWithTotalScores.Any())
+        {
+            <ul class="player-list">
+                @foreach (var playerWithScore in playersWithTotalScores)
+                {
+                    <li class="player-item">
+                        <span class="player-name">@playerWithScore.Player.Name</span>
+                        <span class="player-score">@playerWithScore.TotalScore</span>
+                    </li>
+                }
+            </ul>
+
+        }
+        else
+        {
+            <p>Loading player scores...</p>
+        }
+    </div>
+
+
+
+
+
+
+</div>
+
+
+<div class="card-container">
+    <a href="/players" class="card-link">Players</a>
+    <a href="/klockan" class="card-link">PLÄJ KLOCKAN</a>
+    <a href="/301" class="card-link">PLÄJ 301</a>
+    <!-- Lägg till fler kort här -->
+</div>
+
+
+
+@code {
+    private Match match = new Match { Date = null };  // Låt datum vara null tills ett datum väljs
+    private List<Player> players;  // Lista över alla spelare
+    private List<Match> matches;  // Lista över tidigare matcher
+    private List<PlayerWithTotalScore> playersWithTotalScores;  // Spelare med deras totala poäng
+    
+
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        
+    }
+
+    private async Task LoadData()
+    {
+        // Hämta alla spelare
+        players = await PlayerService.GetAllPlayersAsync();
+
+        // Skapa PlayerScore-objekt för varje spelare och koppla dem till matchen
+        match.PlayerScores = players.Select(p => new Models.PlayerScore
+            {
+                PlayerId = p.Id,
+                Player = p,
+                Score = null  // Sätt Score till null så att input-fältet kan visa placeholder
+            }).ToList();
+
+        // Hämta tidigare matcher och spelarens totala poäng
+        matches = await _context.Matches.Include(m => m.PlayerScores).ThenInclude(ps => ps.Player).ToListAsync();
+        playersWithTotalScores = await PlayerService.GetPlayersWithTotalScoresAsync();
+    }
+
+    private async Task HandleSubmit()
+    {
+        // Validering: kontrollera att ett datum har valts
+        if (match.Date == null)
+        {
+            // Hantera felmeddelande eller feedback till användaren
+            return;
+        }
+
+        // Konvertera nullable int (int?) till int med fallback till 0 om Score är null
+        var newMatch = new Match
+            {
+                PlayerScores = match.PlayerScores.Select(p => new Models.PlayerScore
+                {
+                    PlayerId = p.PlayerId,
+                    Score = p.Score ?? 0  // Om Score är null, sätt det till 0
+                }).ToList(),
+                Date = match.Date,
+                NumberOfGames = match.NumberOfGames
+            };
+
+        // Spara matchen inklusive spelarpoängen
+        await PlayerService.AddMatchAsync(newMatch);
+
+        // Återställ matchen och skapa en ny instans för nästa omgång
+        match = new Match
+            {
+                PlayerScores = players.Select(p => new Models.PlayerScore
+                {
+                    PlayerId = p.Id,
+                    Player = p,
+                    Score = null  // Återställ poängen till null
+                }).ToList()
+            };
+
+        await LoadData();
+    }
+
+    private void OnNumberOfGamesChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int numberOfGames))
+        {
+            match.NumberOfGames = numberOfGames;
+        }
+        else
+        {
+            match.NumberOfGames = 0; // Om inmatning inte är ett nummer, sätt till 0
+        }
+    }
+
+}

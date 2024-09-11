@@ -1,0 +1,339 @@
+﻿/* Ställ in Calibri som standardfont för hela dokumentet */
+body {
+    font-family: 'Calibri', sans-serif;
+}
+
+/* Ställ in Calibri för rubriker */
+h1, h2, h3, h4, h5, h6, label, li, ul {
+    font-family: 'Calibri', sans-serif;
+}
+
+
+/* Grundlayout för containern */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+}
+
+/* Använd flexbox för att ordna elementen horisontellt på större skärmar */
+@media(min-width: 768px) {
+    .container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+
+
+/* Stilar för formulär- och poängsektioner */
+.form-container,
+.scores-container {
+    flex: 1;
+    min-width: 300px; /* Minsta bredd för att de inte ska bli för smala */
+    background: #fff;
+    border: 2px solid #ddd; /* Förbättrad kontrast för synlighet */
+    border-radius: 8px; /* Rundade hörn */
+    padding: 20px; /* Mer padding för att ge luft mellan elementen */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Mjukare skugga */
+}
+
+    /* Förbättrad rubrikstil för formulär och poängsektion */
+    .form-container h3,
+    .scores-container h3 {
+        font-size: 20px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+/* Allmänna stilar för formuläret */
+form {
+    margin: 0; /* Tar bort onödiga marginaler */
+    padding: 0; /* Tar bort padding */
+    border: none; /* Tar bort formens egna border */
+}
+
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #222; /* Mörkare textfärg för bättre läsbarhet */
+    }
+
+    form input[type="date"],
+    form input[type="number"] {
+        width: 100%; /* Full bredd för input-fälten */
+        padding: 12px; /* Större padding för touch-vänlighet */
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px; /* Lättläst textstorlek på mobiler */
+    }
+
+    /* Förbättrad stil för knappen */
+    form button {
+        width: 100%;
+        padding: 15px; /* Större padding för touch-vänlighet */
+        border: none;
+        border-radius: 4px;
+        background: #28a745;
+        color: #fff;
+        font-size: 18px; /* Större textstorlek */
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        form button:hover {
+            background: #218838;
+        }
+
+/* Stilar för länken */
+a {
+    display: block;
+    width: max-content;
+    margin: 10px auto;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+/* Förbättrad lista för att visa spelare och deras poäng */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    ul li {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        font-size: 16px;
+    }
+
+        ul li:last-child {
+            border-bottom: none;
+        }
+
+
+
+/* För att bilder och andra media ska vara responsiva */
+img {
+    height: 450px;
+    width: 900px;
+    object-fit: contain;
+    margin-top: 1rem;
+    max-width: 100%; /* Gör bilden responsiv */
+    height: auto; /* Gör höjden proportionerlig */
+}
+
+/* Extra stilar för mindre skärmar */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .form-container,
+    .scores-container {
+        margin-bottom: 20px; /* Skapa mer utrymme mellan sektionerna */
+    }
+
+    ul li {
+        font-size: 14px; /* Anpassa textstorlek för små skärmar */
+    }
+
+    .match-history .match-date {
+        font-size: 14px;
+    }
+
+    .match-history .scores div {
+        font-size: 12px;
+    }
+}
+
+.player-list {
+    list-style-type: none; /* Ta bort standardpunktlistan */
+    padding: 0;
+    margin: 0;
+}
+
+.player-item {
+    display: flex; /* Använd flexbox för att placera namn och poäng i rad */
+    justify-content: space-between; /* Skapar utrymme mellan namn och poäng */
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Linje mellan spelarna */
+    font-size: 16px;
+}
+
+    .player-item:last-child {
+        border-bottom: none; /* Ingen linje för sista spelaren */
+    }
+
+.player-name {
+    flex: 1; /* Tar upp så mycket plats som möjligt */
+    font-weight: bold; /* Gör namnet lite mer framträdande */
+}
+
+.player-score {
+    flex: 0 0 50px; /* Fixerad bredd för poäng för att skapa jämnare avstånd */
+    text-align: right; /* Högerjustera poängen */
+    font-weight: normal;
+}
+
+
+
+
+/* Stil för kortlänkar */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 20px; /* Lägg till margin för att separera korten från andra sektioner */
+    box-sizing: border-box;
+}
+
+.card-link {
+    display: block;
+   
+    padding: 20px;
+    width:100%;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 8px;
+    background-color: black;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+   
+    margin: 10px;
+    box-sizing: border-box;
+    width: 200px; /* Bredd på korten */
+}
+    .card-link:hover {
+        background-color: #fff; /* Vit bakgrundsfärg vid hover */
+        color: #000; /* Svart textfärg vid hover */
+        border: 2px solid #000; /* Svart border vid hover */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lite mjukare skugga */
+        text-decoration: none;
+        cursor:pointer;
+    }
+
+
+  /* PLAYER-PAGE  */
+
+.form-control {
+    width: 100%; /* Full bredd för input-fält */
+    padding: 12px; /* Padding för mer "luft" */
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px; /* Lättläst textstorlek */
+}
+
+
+/* KLOCKAN */
+
+.progress-tracker {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 kolumner, kan anpassas */
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.progress-item {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #333;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+    .progress-item.hit {
+        background-color: #28a745;
+        color: white;
+        border-color: #218838;
+    }
+
+
+.dartboard {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f1f1;
+}
+
+.dartboard-number {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 2px solid #333;
+    transform: rotate(var(--angle)) translate(120px) rotate(-var(--angle));
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+    .dartboard-number.hit {
+        background-color: #28a745;
+        color: white;
+        border-color: #218838;
+    }
+.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+    .score-table th, .score-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .score-table th {
+        background-color: #f8f9fa;
+        font-size: 16px;
+    }
+
+    .score-table td {
+        font-size: 14px;
+    }
+
+    .score-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+
+.winnerWinnerChickenDinner{
+    font-size:36px;
+    color:green;
+    font-weight:bolder;
+}
