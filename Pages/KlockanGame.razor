@@ -1,11 +1,11 @@
 ﻿@page "/klockan"
 @inject PlayerService PlayerService
+@inject NavigationManager NavigationManager
 @inject DartContext _context
-
-
+@inject IJSRuntime JSRuntime
 
 <div class="container">
-    <h1 class="title">DAS UHR</h1>
+    <h1 class="title">@titleMessage</h1>
 
     @if (klockanGamePlayers == null)
     {
@@ -15,55 +15,69 @@
     {
         @if (!string.IsNullOrEmpty(winnerMessage))
         {
-            <p class="winnerWinnerChickenDinner">@winnerMessage</p>
+            <p class="winnerMessage">@winnerMessage</p>
+            <div class="buttons">
+                <button class="uncommon" @onclick="PlayAgain">Spela igen?</button>
+                <button class="epic" @onclick="GoToHomePage">Ta mig härifrån</button>
+            </div>
         }
-
-        
-
-        <div class="player-cards">
-            @foreach (var gamePlayer in klockanGamePlayers)
-            {
-                @if (IsPlayerSelected(gamePlayer.PlayerId))
+        else
+        {
+            <div class="player-cards">
+                @foreach (var gamePlayer in klockanGamePlayers)
                 {
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>@gamePlayer.Player.Name</h4>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Current Number:</strong> @gamePlayer.CurrentNumber</p>
-                            <p><strong>Attempts:</strong> @gamePlayer.Attempts</p>
-                            <div class="buttons">
-                                <button class="unoPoint" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Single")'>+1 Single</button>
-                                <button class="dosPoints" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Double")'>+2 Double</button>
-                                <button class="tresPoints" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Triple")'>+3 Triple</button>
+                    @if (IsPlayerSelected(gamePlayer.PlayerId))
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>@gamePlayer.Player.Name</h4>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Current Number:</strong> @gamePlayer.CurrentNumber</p>
+                                <p><strong>Attempts:</strong> @gamePlayer.Attempts</p>
+                                <div class="buttons">
+                                    <button class="miss" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Miss")'>Miss</button>
+                                    <button class="uncommon" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Single")'>+1 Single</button>
+                                    <button class="rare" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Double")'>+2 Double</button>
+                                    <button class="epic" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Triple")'>+3 Triple</button>
+                                    @if (gamePlayer.CurrentNumber == 20)  // Kontrollerar om poängen är exakt 20
+                                    {
+                                        <button class="legendary" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Bullseye")'>Bullseye</button>
+                                    }
+                                </div>
                             </div>
                         </div>
+                    }
+                }
+            </div>
+            <div class="player-selection">
+                <h3>Välj spelare:</h3>
+                @foreach (var gamePlayer in klockanGamePlayers)
+                {
+                    <div>
+                        <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
+                        @gamePlayer.Player.Name
                     </div>
                 }
-            }
-        </div>
-        <div class="player-selection">
-            <h3>Välj spelare:</h3>
-            @foreach (var gamePlayer in klockanGamePlayers)
-            {
-                <div>
-                    <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
-                    @gamePlayer.Player.Name
-                </div>
-            }
-        </div>
+            </div>
+        }
     }
-    <a href="/">Tillbaka</a>
+   
 </div>
-
-
 
 @code {
     private List<KlockanGamePlayer> klockanGamePlayers;
-    private string winnerMessage = string.Empty; 
+    private string winnerMessage = string.Empty;
     private List<int> selectedPlayerIds = new List<int>(); // Lista med valda spelare
+    private string titleMessage = "DAS UHR"; // Ny variabel för att ändra rubriken
+    private string returnToIndex = "Tillbaka"; // Ny variabel för att ändra rubriken
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadGame();
+    }
+
+    private async Task LoadGame()
     {
         // Hämta alla spelare från din PlayerService
         var players = await PlayerService.GetAllPlayersAsync();
@@ -73,12 +87,13 @@
             {
                 PlayerId = player.Id,
                 Player = player, // Koppla din Player-objekt till KlockanGamePlayer
-                CurrentNumber = 0,
+                CurrentNumber = 1,
                 Attempts = 0
             }).ToList();
+
+        winnerMessage = string.Empty; // Återställ vinnarmeddelandet
     }
 
-    // Metod för att registrera träff baserat på vilken knapp som trycks
     private void RegisterHit(int playerId, string hitType)
     {
         var gamePlayer = klockanGamePlayers.FirstOrDefault(p => p.PlayerId == playerId);
@@ -87,24 +102,36 @@
         {
             switch (hitType)
             {
+                case "Miss":
+                    gamePlayer.Attempts += 1;
+                    break;
                 case "Single":
                     gamePlayer.CurrentNumber += 1;
+                    gamePlayer.Attempts += 1;
                     break;
                 case "Double":
                     gamePlayer.CurrentNumber += 2;
+                    gamePlayer.Attempts += 1;
                     break;
                 case "Triple":
                     gamePlayer.CurrentNumber += 3;
+                    gamePlayer.Attempts += 1;
+                    break;
+                case "Bullseye":
+                    gamePlayer.CurrentNumber += 1;
+                    gamePlayer.Attempts += 1;
                     break;
             }
-
-            // Öka antalet försök
-            gamePlayer.Attempts += 1;
 
             // Kontrollera om spelaren har nått 21 poäng
             if (gamePlayer.CurrentNumber >= 21)
             {
                 winnerMessage = $"Hurra för {gamePlayer.Player.Name}, du är dartmästare!!!!!";
+                klockanGamePlayers = new List<KlockanGamePlayer>(); // Rensa spelare
+                titleMessage = $"Die Uhr hat für dieses Mal ihren letzten Schlag geschlagen"; // Uppdatera rubriken vid vinst
+                
+                // Trigga konfetti
+                TriggerConfetti();
             }
 
             // Uppdatera UI
@@ -128,10 +155,36 @@
     {
         return selectedPlayerIds.Contains(playerId);
     }
+
+    private void PlayAgain()
+    {
+        // Navigera till samma sida för att återställa spelet
+        NavigationManager.NavigateTo("/klockan", true);
+    }
+
+
+    private async Task TriggerConfetti()
+    {
+        await JSRuntime.InvokeVoidAsync("canvasConfetti");
+    }
+
+    private void GoToHomePage()
+    {
+        NavigationManager.NavigateTo("/", true); // Navigera till startsidan
+    }
+
 }
 
 
 <style>
+  
+
+    .eagle-lake-regular {
+        font-family: "Eagle Lake", serif;
+        font-weight: 400;
+  
+    }
+
     .container {
         margin: 20px;
         font-family: Arial, sans-serif;
@@ -160,10 +213,16 @@
         transition: transform 0.3s ease;
     }
 
+    .card-body {
+        text-align: center; /* Centrerar textinnehållet (Current Number och Attempts) */
+        font-size: 16px;
+        color: #333;
+    }
     .card-header h4 {
         margin: 0;
         font-size: 1.2em;
         color: #333;
+        text-align: center; /* Centrerar texten */
     }
 
     .card-body p {
@@ -172,31 +231,81 @@
         color: #666;
     }
 
-    .buttons button {
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Mellanrum mellan knappar */
+        justify-content: center; /* Centrerar knapparna vertikalt om det behövs */
+        align-items: center; /* Centrerar knapparna horisontellt */
+        width: 100%; /* Gör att knapparna centreras i sin container */
+    }
+
+        .buttons button {
+            width: 240px; /* Använd den önskade fasta bredden */
+            font-family: 'Eagle Lake', cursive;
+            height: 52px;
+           
+            border-radius: 4px 0 0 0;
+            border: 1px solid #333333;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; /* Border runt texten */
+        }
+
+    /* Miss-knapp (vit med svart ram) */
+    .miss {
+        background-color: white;
         color: white;
-        padding: 10px;
-        margin: 5px 0;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        width: 100%;
-        font-size: 1em;
-        text-align: center;
+        border: 1px solid black;
     }
 
-    .unoPoint {
-        background-color: darkolivegreen; /* Grön */
+    /* +1 Single (grön knapp med vit text och svart ram) */
+    .uncommon {
+        background-color: #BDEEB6;
+        color: #1EFF00;
+        border: 1px solid #228b22;
     }
 
-    .dosPoints {
-        background-color: darkred; /* Röd */
+    /* +2 Double (blå knapp med vit text och blå ram) */
+    .rare {
+        background-color: #A2C7EA;
+        color: #0070DD;
+        border: 1px solid #2f4f99;
     }
 
-    .tresPoints {
-        background-color: black; /* Svart */
+    /* +3 Triple (lila knapp med vit text och lila ram) */
+    .epic {
+        background-color: #E4CBF5;
+        color: #A335EE;
+        border: 1px solid #663399;
     }
 
+    /* Bullseye (beige/orange knapp med svart text och orange ram) */
+    .legendary {
+        background-color: #FBEBDB;
+        color: #FF8000;
+        border: 1px solid #ff8c00;
+        animation: pulse-shadow 1s ease-in infinite; /* Applicera pulserande skugga-animation */
+    }
+
+    /* Effekt när man håller över knapparna */
+    .buttons button:hover {
+        opacity: 0.9;
+        transform: scale(1.05); /* Gör knappen något större vid hover */
+    }
+
+    /* Effekt när man trycker på knappen */
+    .buttons button:active {
+        background-color: #ddd; /* Ljusare bakgrundsfärg när knappen trycks */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Skugga för tryck-effekt */
+        transform: translateY(2px); /* Gör att knappen verkar tryckas ner */
+    }
+
+    }
 
    
 </style>
+
+
