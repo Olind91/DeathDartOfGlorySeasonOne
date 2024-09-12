@@ -1,7 +1,5 @@
 using DeathDartOfGlorySeasonOne.Context;
 using DeathDartOfGlorySeasonOne.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
