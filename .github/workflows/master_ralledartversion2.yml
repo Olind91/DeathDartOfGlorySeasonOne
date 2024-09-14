@@ -1,0 +1,70 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: .NET Core Build and Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1'
+
+      - name: Restore dependencies
+        run: dotnet restore DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj
+
+      - name: Build with dotnet
+        run: dotnet build DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj --configuration Release
+
+      - name: Publish .NET application
+        run: dotnet publish DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj -c Release -o ./myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./myapp
+
+
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0A8C0D081DEA4035900559DE27A0E98C }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_3B77A4B12E97413FBD2DEDA961CE99E9 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0F5443E884F64B5C975BA6E506CD5AB6 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'RalleDartVersion2'
+          slot-name: 'Production'
+          package: .
+          
