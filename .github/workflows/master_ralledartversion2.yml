@@ -14,24 +14,29 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '3.1'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
+      - name: Restore dependencies
+        run: dotnet restore DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj
 
-      - name: dotnet publish
+      - name: Build with dotnet
+        run: dotnet build DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj --configuration Release
+
+      - name: Publish .NET application
         run: dotnet publish DeathDartOfGlorySeasonOne/DeathDartOfGlorySeasonOne.csproj -c Release -o ./myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./myapp
+
 
   deploy:
     runs-on: windows-latest
