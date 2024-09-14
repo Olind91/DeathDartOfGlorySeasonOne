@@ -3,5 +3,95 @@
 <h3>_301Game</h3>
 <a href="/">Tillbaka</a>
 @code {
+    public int StartScore { get; set; } = 301;
 
+    private readonly int _maxScore = 180;
+    private readonly int _score = 0;
+
+    public void CalculateScore(string input)
+    {
+        StartScore -= int.Parse(input);
+
+        if (StartScore <= _maxScore)
+            Console.WriteLine(PossibleOuts());
+    }
+
+    public bool ValidateInput(string input)
+    {
+        if (input.Any(c => !char.IsDigit(c)))
+        {
+            Console.WriteLine("skriv inte bokstav");
+            return false;
+        }
+        if (string.IsNullOrEmpty(input))
+        {
+            Console.WriteLine("du måste ange en siffra dumsnut!!");
+            return false;
+        }
+        if (int.Parse(input) > 180)
+        {
+            Console.WriteLine("fuska inte");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void CalculateScore(int inputScore)
+    {
+        Score - inputScore;
+    }
+
+    public string PossibleOuts()
+    {
+        var possibleOuts = new Dictionary<int, string>
+        {
+            { 50, "Bullseye" },
+            { 25, "Halv-bullseye" },
+            { 60, "Trippel 20" },
+            { 57, "Trippel 19" },
+            { 54, "Trippel 18" },
+            { 51, "Trippel 17" },
+            { 48, "Trippel 16" },
+            { 45, "Trippel 15" },
+            { 40, "Dubbel 20" },
+            { 38, "Dubbel 19" },
+            { 36, "Dubbel 18" },
+            { 34, "Dubbel 17" },
+            { 32, "Dubbel 16" },
+            { 30, "Dubbel 15" },
+            { 20, "Dubbel 10" },
+            { 10, "Dubbel 5" },
+            { 3, "Singel 3" },
+            { 1, "Singel 1" }
+        };
+        if (possibleOuts.ContainsKey(StartScore))
+        {
+            return possibleOuts[StartScore];
+        }
+
+        // Kontrollera utgång med två pilar
+        foreach (var firstThrow in possibleOuts)
+        {
+            int remainingScore = StartScore - firstThrow.Key;
+            if (remainingScore > 0 && possibleOuts.ContainsKey(remainingScore))
+            {
+                return $"{firstThrow.Value}, följt av {possibleOuts[remainingScore]}";
+            }
+        }
+
+        // Kontrollera utgång med tre pilar
+        foreach (var firstThrow in possibleOuts)
+        {
+            foreach (var secondThrow in possibleOuts)
+            {
+                int remainingScore = StartScore - firstThrow.Key - secondThrow.Key;
+                if (remainingScore > 0 && possibleOuts.ContainsKey(remainingScore))
+                {
+                    return $"{firstThrow.Value}, följt av {secondThrow.Value}, följt av {possibleOuts[remainingScore]}";
+                }
+            }
+        }
+        return string.Empty;
+    }
 }
