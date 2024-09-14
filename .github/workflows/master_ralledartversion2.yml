@@ -1,13 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - RalleDartVersion2
+name: .NET Core Build and Publish
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   build:
@@ -36,6 +35,7 @@ jobs:
         with:
           name: .net-app
           path: ./myapp
+
 
 
   deploy:
