@@ -1,70 +1,155 @@
 ﻿@page "/301"
 
 <h3>_301Game</h3>
+
+<div class="calculator">
+    <input type="text" @bind="StartScore" disabled />
+    <input type="text" @bind="_roundScore" disabled />
+
+    <div class="buttons">
+        <button @onclick="() => AddToRoundScore('1')">1</button>
+        <button @onclick="() => AddToRoundScore('2')">2</button>
+        <button @onclick="() => AddToRoundScore('3')">3</button>
+
+        <button @onclick="() => AddToRoundScore('4')">4</button>
+        <button @onclick="() => AddToRoundScore('5')">5</button>
+        <button @onclick="() => AddToRoundScore('6')">6</button>
+
+        <button @onclick="() => AddToRoundScore('7')">7</button>
+        <button @onclick="() => AddToRoundScore('8')">8</button>
+        <button @onclick="() => AddToRoundScore('9')">9</button>
+
+        <button @onclick="() => AddToRoundScore('0')">0</button>
+        <button @onclick="RemoveLastEntry">C</button>
+        <button @onclick="CalculateScore">=</button>
+
+    </div>
+</div>
+
+<div class="modal" style="@(_dialogIsVisible ? "display: block;" : "display: none;")">
+    <div class="modal-content">
+        <p>@_dialogMessage</p>
+        <okButton @onclick="CloseDialog">Okej</okButton>
+    </div>
+</div>
+
+
 <a href="/">Tillbaka</a>
+
 @code {
+    //Poäng
     public int StartScore { get; set; } = 301;
 
     private readonly int _maxScore = 180;
-    private readonly int _score = 0;
+    private string _roundScore = string.Empty;
 
-    public void CalculateScore(string input)
+    //Dialogruta
+    private bool _dialogIsVisible = false;
+    private string _dialogMessage = string.Empty;
+
+    //TODO: Hantera om man vinner!!
+    private void CalculateScore()
     {
-        StartScore -= int.Parse(input);
+        var roundScore = int.Parse(_roundScore);
 
-        if (StartScore <= _maxScore)
-            Console.WriteLine(PossibleOuts());
+        if (ValidateScore(roundScore))
+        {
+            StartScore -= roundScore;
+            _roundScore = string.Empty;
+
+            if (StartScore <= _maxScore)
+                ShowDialog(PossibleOuts());
+        }
+        //BUST!!
+        if (StartScore < 0)
+            StartScore += roundScore;
+
     }
 
-    public bool ValidateInput(string input)
+    private void AddToRoundScore(char value)
     {
-        if (input.Any(c => !char.IsDigit(c)))
-        {
-            Console.WriteLine("skriv inte bokstav");
-            return false;
-        }
-        if (string.IsNullOrEmpty(input))
-        {
-            Console.WriteLine("du måste ange en siffra dumsnut!!");
-            return false;
-        }
-        if (int.Parse(input) > 180)
-        {
-            Console.WriteLine("fuska inte");
-            return false;
-        }
+        if (_roundScore.Length < 3)
+            _roundScore += value;
+    }
 
+    private void RemoveLastEntry()
+    {
+        if (_roundScore.Length > 0)
+            _roundScore = _roundScore.Remove(_roundScore.Length - 1);
+    }
+
+    private bool ValidateScore(int input)
+    {
+        if (input > 180)
+        {
+            ShowDialog("fuska inte");
+            _roundScore = string.Empty;
+            return false;
+        }
         return true;
     }
 
-    public void CalculateScore(int inputScore)
+    private void ShowDialog(string message)
     {
-        Score - inputScore;
+        _dialogMessage = message;
+        _dialogIsVisible = true;
     }
 
-    public string PossibleOuts()
+    private void CloseDialog()
+    {
+        _dialogMessage = string.Empty;
+        _dialogIsVisible = false;
+    }
+
+    private string PossibleOuts()
     {
         var possibleOuts = new Dictionary<int, string>
         {
-            { 50, "Bullseye" },
-            { 25, "Halv-bullseye" },
-            { 60, "Trippel 20" },
-            { 57, "Trippel 19" },
-            { 54, "Trippel 18" },
-            { 51, "Trippel 17" },
-            { 48, "Trippel 16" },
-            { 45, "Trippel 15" },
-            { 40, "Dubbel 20" },
-            { 38, "Dubbel 19" },
-            { 36, "Dubbel 18" },
-            { 34, "Dubbel 17" },
+            { 1, "Enkel 1" },
+            { 2, "Enkel 2/Dubbel 1" },
+            { 3, "Enkel 3/Trippel 1" },
+            { 4, "Enkel 4/Dubbel 2" },
+            { 5, "Enkel 5" },
+            { 6, "Enkel 6/Dubbel 3/Trippel 2" },
+            { 7, "Enkel 7" },
+            { 8, "Enkel 8/Dubbel 4" },
+            { 9, "Enkel 9/Trippel 3" },
+            { 10, "Enkel 10/Dubbel 5" },
+            { 11, "Enkel 11" },
+            { 12, "Enkel 12/Dubbel 6/Trippel 4" },
+            { 13, "Enkel 13" },
+            { 14, "Enkel 14/Dubbel 7" },
+            { 15, "Enkel 15/Trippel 5" },
+            { 16, "Enkel 16/Dubbel 8" },
+            { 17, "Enkel 17" },
+            { 18, "Enkel 18/Dubbel 9/Trippel 6" },
+            { 19, "Enkel 19" },
+            { 20, "Enkel 20/Dubbel 10" },
+            { 21, "Trippel 7" },
+            { 22, "Dubbel 11" },
+            { 24, "Dubbel 12/Trippel 8" },
+            { 25, "Outer Bull" },
+            { 26, "Dubbel 13" },
+            { 27, "Trippel 9" },
+            { 28, "Dubbel 14" },
+            { 30, "Dubbel 15/Trippel 10" },
             { 32, "Dubbel 16" },
-            { 30, "Dubbel 15" },
-            { 20, "Dubbel 10" },
-            { 10, "Dubbel 5" },
-            { 3, "Singel 3" },
-            { 1, "Singel 1" }
+            { 33, "Trippel 11" },
+            { 34, "Dubbel 17" },
+            { 36, "Dubbel 18/Trippel 12" },
+            { 38, "Dubbel 19" },
+            { 39, "Trippel 13" },
+            { 40, "Dubbel 20" },
+            { 42, "Trippel 14" },
+            { 45, "Trippel 15" },
+            { 48, "Trippel 16" },
+            { 50, "Bullseye" },
+            { 51, "Trippel 17" },
+            { 54, "Trippel 18" },
+            { 57, "Trippel 19" },
+            { 60, "Trippel 20" }
         };
+        // Kontrollera utgång med en pil
         if (possibleOuts.ContainsKey(StartScore))
         {
             return possibleOuts[StartScore];
@@ -95,3 +180,80 @@
         return string.Empty;
     }
 }
+
+<style>
+    .calculator {
+        width: 200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+        .calculator input {
+            width: 100%;
+            padding: 10px;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+
+        .buttons button {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+            .buttons button:hover {
+                background-color: #ddd;
+            }
+
+            .buttons button:active {
+                background-color: #ccc;
+            }
+
+    .modal {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: block;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0px 4px 8px rgba(0,00,0.2);
+    }
+
+    .modal-content {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        width: 300px;
+    }
+
+    okButton {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        okButton:hover {
+            background-color: #0056b3;
+        }
+</style>
