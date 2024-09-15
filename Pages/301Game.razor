@@ -1,6 +1,26 @@
 ﻿@page "/301"
+@inject PlayerService PlayerService
+@inject DartContext _context
 
-<h3>_301Game</h3>
+<div class="container">
+    <h1 class="title">@_titleMessage</h1>
+
+    @if (_gamePlayers.Count is 0)
+    {
+        <p>Loading...</p>
+    }
+
+    <div class="player-selection">
+        <h3>Välj spelare:</h3>
+        @foreach (var gamePlayer in _gamePlayers)
+        {
+            <div>
+                <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
+                @gamePlayer.Player.Name
+            </div>
+        }
+    </div>
+
 
 <div class="calculator">
     <input type="text" @bind="StartScore" disabled />
@@ -26,6 +46,7 @@
     </div>
 </div>
 
+
 <div class="modal" style="@(_dialogIsVisible ? "display: block;" : "display: none;")">
     <div class="modal-content">
         <p>@_dialogMessage</p>
@@ -36,6 +57,8 @@
 
 <a href="/">Tillbaka</a>
 
+</div>
+
 @code {
     //Poäng
     public int StartScore { get; set; } = 301;
@@ -43,9 +66,14 @@
     private readonly int _maxScore = 180;
     private string _roundScore = string.Empty;
 
-    //Dialogruta
+    //Spelare
+    private List<_301GamePlayer> _gamePlayers = new();
+    private List<int> selectedPlayerIds = new List<int>();
+
+    //Dialogruta och meddelanden
     private bool _dialogIsVisible = false;
     private string _dialogMessage = string.Empty;
+    private string _titleMessage = "NOLLETTAN BABY";
 
     //TODO: Hantera om man vinner!!
     private void CalculateScore()
@@ -57,6 +85,7 @@
             StartScore -= roundScore;
             _roundScore = string.Empty;
 
+            //TODO: Lägg till koll för vinst innan denna körs!
             if (StartScore <= _maxScore)
                 ShowDialog(PossibleOuts());
         }
@@ -178,6 +207,23 @@
             }
         }
         return string.Empty;
+    }
+
+    private void TogglePlayer(int playerId)
+    {
+        if (selectedPlayerIds.Contains(playerId))
+        {
+            selectedPlayerIds.Remove(playerId);
+        }
+        else
+        {
+            selectedPlayerIds.Add(playerId);
+        }
+    }
+
+    private bool IsPlayerSelected(int playerId)
+    {
+        return selectedPlayerIds.Contains(playerId);
     }
 }
 
