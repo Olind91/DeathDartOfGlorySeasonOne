@@ -18,7 +18,7 @@
             <p class="winnerMessage">@winnerMessage</p>
             <div class="buttons">
                 <button class="uncommon" @onclick="PlayAgain">Spela igen?</button>
-                <button class="epic" @onclick="GoToHomePage">Ta mig härifrån</button>
+               
             </div>
         }
         else
@@ -44,24 +44,31 @@
                                     {
                                         <button class="legendary" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Bullseye")'>Bullseye</button>
                                     }
+                                  
                                 </div>
                             </div>
                         </div>
                     }
                 }
             </div>
-            <div class="player-selection">
+           <div class="player-selection">
                 <h3>Välj spelare:</h3>
-                @foreach (var gamePlayer in klockanGamePlayers)
-                {
-                    <div>
-                        <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
-                        @gamePlayer.Player.Name
-                    </div>
-                }
+                <div class="player-buttons">
+                    @foreach (var gamePlayer in klockanGamePlayers)
+                    {
+                        <button class="player-button @GetButtonClass(gamePlayer.PlayerId)"
+                                @onclick="() => TogglePlayer(gamePlayer.PlayerId)">
+                            @gamePlayer.Player.Name
+                        </button>
+                    }
+                </div>
             </div>
         }
     }
+    <div class="buttons">
+       
+        <button class="rare" @onclick="GoToHomePage">Ta mig härifrån</button>
+    </div>
    
 </div>
 
@@ -110,11 +117,26 @@
                     gamePlayer.Attempts += 1;
                     break;
                 case "Double":
-                    gamePlayer.CurrentNumber += 2;
+                    if (gamePlayer.CurrentNumber >= 18)
+                    {
+                        gamePlayer.CurrentNumber = 20; // Sätt poängen till 20 om det är 18 eller 19
+                    }
+                    else
+                    {
+                        gamePlayer.CurrentNumber += 2; // Annars lägg till 2
+                    }
                     gamePlayer.Attempts += 1;
                     break;
                 case "Triple":
-                    gamePlayer.CurrentNumber += 3;
+                    // Kontrollera om det skulle resultera i mer än 20
+                    if (gamePlayer.CurrentNumber >= 18)
+                    {
+                        gamePlayer.CurrentNumber = 20; // Sätt poängen till 20 om det är 18 eller 19
+                    }
+                    else
+                    {
+                        gamePlayer.CurrentNumber += 3; // Annars lägg till 3
+                    }
                     gamePlayer.Attempts += 1;
                     break;
                 case "Bullseye":
@@ -173,5 +195,9 @@
         NavigationManager.NavigateTo("/", true); // Navigera till startsidan
     }
 
+    private string GetButtonClass(int playerId)
+    {
+        return IsPlayerSelected(playerId) ? "player-button selected" : "player-button";
+    }
 }
 

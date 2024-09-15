@@ -30,6 +30,7 @@ h1 {
     font-size: 2.5rem; /* Skalar med skärmens storlek */
 }
 
+
 p {
     font-size: 1rem;
 }
@@ -225,15 +226,60 @@ ul {
 
 .title {
     text-align: center;
+    font-weight:bolder;
+    font-size:3rem !important;
 }
 
+/* Stil för player-selection */
 .player-selection {
     margin-bottom: 20px;
 }
 
-    .player-selection input {
-        margin-right: 10px;
+    /* Stil för rubrik */
+    .player-selection h3 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 10px;
     }
+
+/* Stil för knapparna */
+.player-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Utrymme mellan knappar */
+}
+
+.player-button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .player-button:hover {
+        background-color: #e2e6ea;
+        transform: scale(1.05);
+    }
+
+    .player-button:active {
+        background-color: #d6d9dc;
+        transform: scale(1);
+    }
+
+    /* Stil för markerade knappar */
+    .player-button.selected {
+        background-color: green;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+     
     
 
 .card {
@@ -348,7 +394,11 @@ ul {
 
 
 
-
+.checkboxPlayer {
+    background-color: #E4CBF5;
+    color: #A335EE;
+    border: 1px solid #663399;
+}
 
 
 
@@ -405,6 +455,7 @@ ul {
         padding: 15px; /* Minska padding något */
     }
 
+   
     /* Anpassa textstorlekar */
     h1, h2, h3, h4, h5, h6 {
         font-size: 1.5em; /* Justera rubrikstorlekar */
