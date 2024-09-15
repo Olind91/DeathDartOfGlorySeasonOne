@@ -14,7 +14,7 @@
 
    
 
-    <div class="form-container">
+    <div class="inputFields">
         <h1 class="title">Register Match</h1>
         <form @onsubmit="HandleSubmit" @onsubmit:preventDefault>
             <div class="form-group">
@@ -55,7 +55,7 @@
         </form>
     </div>
 
-    <div class="scores-container">
+    <div class="inputFields">
         <h3 class="title">Player Scores</h3>
         @if (playersWithTotalScores != null && playersWithTotalScores.Any())
         {
