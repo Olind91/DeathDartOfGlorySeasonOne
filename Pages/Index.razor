@@ -1,11 +1,22 @@
 ﻿@page "/"
 @inject PlayerService PlayerService
 @inject DartContext _context
+@inject NavigationManager NavigationManager
 
 <div class="container">
-    <div class="form-container">
+    <h1 class="title">TÅRDSKARS DARTAPP</h1>
+   
+        <div class="buttons">            
+            <button class="darkBlue" @onclick="PlayKlockan">PLÄJ KLOCKAN</button>
+            <button class="darkBlue" @onclick="Play301">PLÄJ 301</button>
+            <button class="darkBlue" @onclick="ViewPlayers">PLÄJERS</button>
+        </div>
+
+   
+
+    <div class="inputFields">
+        <h1>Register Match</h1>
         <form @onsubmit="HandleSubmit" @onsubmit:preventDefault>
-            <h3>Register Match</h3>
             <div class="form-group">
                 <label>Date:</label>
                 <input type="date" @bind="match.Date" placeholder="Select date" />
@@ -19,8 +30,6 @@
                        placeholder="Enter number of games"
                        @onchange="OnNumberOfGamesChanged" />
             </div>
-
-
 
             <div class="form-group">
                 <label>Points earned:</label>
@@ -40,11 +49,13 @@
                 }
             </div>
 
-            <button type="submit">Register Match</button>
+            <div class="buttons">
+                <button class="darkBlue" type="submit">Save</button>
+            </div>
         </form>
     </div>
 
-    <div class="scores-container">
+    <div class="inputFields">
         <h3>Player Scores</h3>
         @if (playersWithTotalScores != null && playersWithTotalScores.Any())
         {
@@ -57,28 +68,14 @@
                     </li>
                 }
             </ul>
-
         }
         else
         {
             <p>Loading player scores...</p>
         }
     </div>
-
-
-
-
-
-
 </div>
 
-
-<div class="card-container">
-    <a href="/players" class="card-link">Players</a>
-    <a href="/klockan" class="card-link">PLÄJ KLOCKAN</a>
-    <a href="/301" class="card-link">PLÄJ 301</a>
-    <!-- Lägg till fler kort här -->
-</div>
 
 
 
@@ -166,6 +163,19 @@
         {
             match.NumberOfGames = 0; // Om inmatning inte är ett nummer, sätt till 0
         }
+    }
+
+    private void Play301()
+    {
+        NavigationManager.NavigateTo("/301", true); // Navigera till startsidan
+    }
+    private void PlayKlockan()
+    {
+        NavigationManager.NavigateTo("/klockan", true); // Navigera till startsidan
+    }
+    private void ViewPlayers()
+    {
+        NavigationManager.NavigateTo("/players", true); // Navigera till startsidan
     }
 
 }

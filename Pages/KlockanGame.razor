@@ -18,7 +18,7 @@
             <p class="winnerMessage">@winnerMessage</p>
             <div class="buttons">
                 <button class="uncommon" @onclick="PlayAgain">Spela igen?</button>
-                <button class="epic" @onclick="GoToHomePage">Ta mig härifrån</button>
+               
             </div>
         }
         else
@@ -44,24 +44,31 @@
                                     {
                                         <button class="legendary" @onclick='() => RegisterHit(gamePlayer.PlayerId, "Bullseye")'>Bullseye</button>
                                     }
+                                  
                                 </div>
                             </div>
                         </div>
                     }
                 }
             </div>
-            <div class="player-selection">
+           <div class="player-selection">
                 <h3>Välj spelare:</h3>
-                @foreach (var gamePlayer in klockanGamePlayers)
-                {
-                    <div>
-                        <input type="checkbox" @onclick="() => TogglePlayer(gamePlayer.PlayerId)" checked="@IsPlayerSelected(gamePlayer.PlayerId)" />
-                        @gamePlayer.Player.Name
-                    </div>
-                }
+                <div class="player-buttons">
+                    @foreach (var gamePlayer in klockanGamePlayers)
+                    {
+                        <button class="player-button @GetButtonClass(gamePlayer.PlayerId)"
+                                @onclick="() => TogglePlayer(gamePlayer.PlayerId)">
+                            @gamePlayer.Player.Name
+                        </button>
+                    }
+                </div>
             </div>
         }
     }
+    <div class="buttons">
+       
+        <button class="rare" @onclick="GoToHomePage">Ta mig härifrån</button>
+    </div>
    
 </div>
 
@@ -110,11 +117,26 @@
                     gamePlayer.Attempts += 1;
                     break;
                 case "Double":
-                    gamePlayer.CurrentNumber += 2;
+                    if (gamePlayer.CurrentNumber >= 18)
+                    {
+                        gamePlayer.CurrentNumber = 20; // Sätt poängen till 20 om det är 18 eller 19
+                    }
+                    else
+                    {
+                        gamePlayer.CurrentNumber += 2; // Annars lägg till 2
+                    }
                     gamePlayer.Attempts += 1;
                     break;
                 case "Triple":
-                    gamePlayer.CurrentNumber += 3;
+                    // Kontrollera om det skulle resultera i mer än 20
+                    if (gamePlayer.CurrentNumber >= 18)
+                    {
+                        gamePlayer.CurrentNumber = 20; // Sätt poängen till 20 om det är 18 eller 19
+                    }
+                    else
+                    {
+                        gamePlayer.CurrentNumber += 3; // Annars lägg till 3
+                    }
                     gamePlayer.Attempts += 1;
                     break;
                 case "Bullseye":
@@ -173,139 +195,9 @@
         NavigationManager.NavigateTo("/", true); // Navigera till startsidan
     }
 
+    private string GetButtonClass(int playerId)
+    {
+        return IsPlayerSelected(playerId) ? "player-button selected" : "player-button";
+    }
 }
-
-
-<style>
-  
-
-    .eagle-lake-regular {
-        font-family: "Eagle Lake", serif;
-        font-weight: 400;
-  
-    }
-
-    .container {
-        margin: 20px;
-        font-family: Arial, sans-serif;
-    }
-
-    .title {
-        text-align: center;
-    }
-
-    .player-selection {
-        margin-bottom: 20px;
-    }
-
-        .player-selection input {
-            margin-right: 10px;
-        }
-
-    .card {
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        padding: 20px;
-        margin-bottom: 20px;
-        transition: transform 0.3s ease;
-    }
-
-    .card-body {
-        text-align: center; /* Centrerar textinnehållet (Current Number och Attempts) */
-        font-size: 16px;
-        color: #333;
-    }
-    .card-header h4 {
-        margin: 0;
-        font-size: 1.2em;
-        color: #333;
-        text-align: center; /* Centrerar texten */
-    }
-
-    .card-body p {
-        margin: 10px 0;
-        font-size: 1em;
-        color: #666;
-    }
-
-    .buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px; /* Mellanrum mellan knappar */
-        justify-content: center; /* Centrerar knapparna vertikalt om det behövs */
-        align-items: center; /* Centrerar knapparna horisontellt */
-        width: 100%; /* Gör att knapparna centreras i sin container */
-    }
-
-        .buttons button {
-            width: 240px; /* Använd den önskade fasta bredden */
-            font-family: 'Eagle Lake', cursive;
-            height: 52px;
-           
-            border-radius: 4px 0 0 0;
-            border: 1px solid #333333;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; /* Border runt texten */
-        }
-
-    /* Miss-knapp (vit med svart ram) */
-    .miss {
-        background-color: white;
-        color: white;
-        border: 1px solid black;
-    }
-
-    /* +1 Single (grön knapp med vit text och svart ram) */
-    .uncommon {
-        background-color: #BDEEB6;
-        color: #1EFF00;
-        border: 1px solid #228b22;
-    }
-
-    /* +2 Double (blå knapp med vit text och blå ram) */
-    .rare {
-        background-color: #A2C7EA;
-        color: #0070DD;
-        border: 1px solid #2f4f99;
-    }
-
-    /* +3 Triple (lila knapp med vit text och lila ram) */
-    .epic {
-        background-color: #E4CBF5;
-        color: #A335EE;
-        border: 1px solid #663399;
-    }
-
-    /* Bullseye (beige/orange knapp med svart text och orange ram) */
-    .legendary {
-        background-color: #FBEBDB;
-        color: #FF8000;
-        border: 1px solid #ff8c00;
-        animation: pulse-shadow 1s ease-in infinite; /* Applicera pulserande skugga-animation */
-    }
-
-    /* Effekt när man håller över knapparna */
-    .buttons button:hover {
-        opacity: 0.9;
-        transform: scale(1.05); /* Gör knappen något större vid hover */
-    }
-
-    /* Effekt när man trycker på knappen */
-    .buttons button:active {
-        background-color: #ddd; /* Ljusare bakgrundsfärg när knappen trycks */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Skugga för tryck-effekt */
-        transform: translateY(2px); /* Gör att knappen verkar tryckas ner */
-    }
-
-    }
-
-   
-</style>
-
 

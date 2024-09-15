@@ -3,8 +3,8 @@
 @inject PlayerService PlayerService
 
 <div class="container">
-    <div class="form-container">
-        <a href="/">Tillbaka</a>
+    <div class="inputFields">
+       
         <h3>Add Player</h3>
 
         <EditForm Model="newPlayer" OnValidSubmit="HandleValidSubmit">
@@ -21,7 +21,7 @@
         </EditForm>
     </div>
 
-    <div class="scores-container">
+    <div class="inputFields">
         <h3>Players List</h3>
 
         @if (players == null)
@@ -38,6 +38,7 @@
             </ul>
         }
     </div>
+    <a href="/">Tillbaka</a>
 </div>
 
 @code {

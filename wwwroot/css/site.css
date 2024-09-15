@@ -1,58 +1,71 @@
-﻿/* Ställ in Calibri som standardfont för hela dokumentet */
-body {
-    font-family: 'Calibri', sans-serif;
+﻿
+
+/* Ställ in Calibri som standardfont för hela dokumentet */
+html, body {
+    width: 320px;
+    max-width: 100%;
+    padding: 0 10px; /* Add 10px padding on the left and right */
+    margin: 0;   
+    box-sizing: border-box; /* För att säkerställa att padding och border inkluderas i elementens bredd */
+    background-color: #ACC8E5;
 }
 
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Se till att main täcker hela visningshöjden */
+}
 /* Ställ in Calibri för rubriker */
-h1, h2, h3, h4, h5, h6, label, li, ul {
-    font-family: 'Calibri', sans-serif;
+h1, h2, h3, h4, h5, h6, label, li, ul, p, div {
+    font-family: 'Eagle Lake';
+}
+
+html {
+    font-size: 16px; /* Basstorlek för lätt justering */
+ 
+}
+
+h1 {
+    font-size: 2.5rem; /* Skalar med skärmens storlek */
+}
+
+
+p {
+    font-size: 1rem;
 }
 
 
 /* Grundlayout för containern */
 .container {
+    max-width: 320px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-}
-
-/* Använd flexbox för att ordna elementen horisontellt på större skärmar */
-@media(min-width: 768px) {
-    .container {
-        flex-direction: row;
-        justify-content: space-between;
-    }
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box; /* Se till att padding inte påverkar bredden */
 }
 
 
 
 /* Stilar för formulär- och poängsektioner */
-.form-container,
-.scores-container {
-    flex: 1;
-    min-width: 300px; /* Minsta bredd för att de inte ska bli för smala */
-    background: #fff;
-    border: 2px solid #ddd; /* Förbättrad kontrast för synlighet */
-    border-radius: 8px; /* Rundade hörn */
-    padding: 20px; /* Mer padding för att ge luft mellan elementen */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Mjukare skugga */
+.inputFields {
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px; /* Increase padding to give more space */
 }
 
     /* Förbättrad rubrikstil för formulär och poängsektion */
-    .form-container h3,
+    .inputFields h3,
     .scores-container h3 {
         font-size: 20px;
         margin-bottom: 15px;
         color: #333;
     }
 
-/* Allmänna stilar för formuläret */
-form {
-    margin: 0; /* Tar bort onödiga marginaler */
-    padding: 0; /* Tar bort padding */
-    border: none; /* Tar bort formens egna border */
-}
 
     form label {
         display: block;
@@ -72,23 +85,7 @@ form {
         font-size: 16px; /* Lättläst textstorlek på mobiler */
     }
 
-    /* Förbättrad stil för knappen */
-    form button {
-        width: 100%;
-        padding: 15px; /* Större padding för touch-vänlighet */
-        border: none;
-        border-radius: 4px;
-        background: #28a745;
-        color: #fff;
-        font-size: 18px; /* Större textstorlek */
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-        form button:hover {
-            background: #218838;
-        }
-
+    
 /* Stilar för länken */
 a {
     display: block;
@@ -125,15 +122,6 @@ ul {
 
 
 
-/* För att bilder och andra media ska vara responsiva */
-img {
-    height: 450px;
-    width: 900px;
-    object-fit: contain;
-    margin-top: 1rem;
-    max-width: 100%; /* Gör bilden responsiv */
-    height: auto; /* Gör höjden proportionerlig */
-}
 
 /* Extra stilar för mindre skärmar */
 @media (max-width: 768px) {
@@ -189,48 +177,7 @@ img {
 }
 
 
-
-
-/* Stil för kortlänkar */
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    margin-bottom: 20px; /* Lägg till margin för att separera korten från andra sektioner */
-    box-sizing: border-box;
-}
-
-.card-link {
-    display: block;
-   
-    padding: 20px;
-    width:100%;
-    font-size: 16px;
-    text-decoration: none;
-    border-radius: 8px;
-    background-color: black;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-   
-    margin: 10px;
-    box-sizing: border-box;
-    width: 200px; /* Bredd på korten */
-}
-    .card-link:hover {
-        background-color: #fff; /* Vit bakgrundsfärg vid hover */
-        color: #000; /* Svart textfärg vid hover */
-        border: 2px solid #000; /* Svart border vid hover */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lite mjukare skugga */
-        text-decoration: none;
-        cursor:pointer;
-    }
-
-
-  /* PLAYER-PAGE  */
+ /* PLAYER-PAGE  */
 
 .form-control {
     width: 100%; /* Full bredd för input-fält */
@@ -243,94 +190,6 @@ img {
 }
 
 
-/* KLOCKAN */
-
-.progress-tracker {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 kolumner, kan anpassas */
-    gap: 10px;
-    margin: 20px 0;
-}
-
-.progress-item {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    color: #333;
-    background-color: #fff;
-    transition: background-color 0.3s ease;
-}
-
-    .progress-item.hit {
-        background-color: #28a745;
-        color: white;
-        border-color: #218838;
-    }
-
-
-.dartboard {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    border: 2px solid #333;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f1f1f1;
-}
-
-.dartboard-number {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
-    border: 2px solid #333;
-    transform: rotate(var(--angle)) translate(120px) rotate(-var(--angle));
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-}
-
-    .dartboard-number.hit {
-        background-color: #28a745;
-        color: white;
-        border-color: #218838;
-    }
-.score-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-    .score-table th, .score-table td {
-        padding: 12px;
-        border: 1px solid #ddd;
-        text-align: center;
-    }
-
-    .score-table th {
-        background-color: #f8f9fa;
-        font-size: 16px;
-    }
-
-    .score-table td {
-        font-size: 14px;
-    }
-
-    .score-table tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
 
 .winnerWinnerChickenDinner{
     font-size:36px;
@@ -340,19 +199,10 @@ img {
 
 
 
-
-
-
-
-
-
-
-
-
 .winnerMessage {
     font-size: 2em;
     font-weight: bold;
-    font-family: 'Eagle Lake', cursive;
+    font-family: 'Eagle Lake';
     color: black;
     animation: winnerAnimation 2s ease-in-out;
     text-align: center;
@@ -362,9 +212,193 @@ img {
 
 
 
+/* KLOCKAN CSS */
+
+.eagle-lake-regular {
+    font-family: "Eagle Lake", serif;
+    font-weight: 400;
+}
+
+.container {
+  
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    text-align: center;
+    font-weight:bolder;
+    font-size:3rem !important;
+}
+
+/* Stil för player-selection */
+.player-selection {
+    margin-bottom: 20px;
+}
+
+    /* Stil för rubrik */
+    .player-selection h3 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+/* Stil för knapparna */
+.player-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Utrymme mellan knappar */
+}
+
+.player-button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .player-button:hover {
+        background-color: #e2e6ea;
+        transform: scale(1.05);
+    }
+
+    .player-button:active {
+        background-color: #d6d9dc;
+        transform: scale(1);
+    }
+
+    /* Stil för markerade knappar */
+    .player-button.selected {
+        background-color: green;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+     
+    
+
+.card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card-body {
+    text-align: center; /* Centrerar textinnehållet (Current Number och Attempts) */
+    font-size: 16px;
+    color: #333;
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #333;
+    text-align: center; /* Centrerar texten */
+}
+
+.card-body p {
+    margin: 10px 0;
+    font-size: 1em;
+    color: #666;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Full bredd för hela .buttons-containern */
+}
+
+    .buttons button {
+        width: 100%; /* Full bredd för knappen */
+        max-width: 240px; /* Men högst 240px på större skärmar */
+        font-family: 'Eagle Lake';
+        height: 52px;
+        border-radius: 4px; /* Rundade hörn på alla sidor */
+
+        font-size: 18px; /* Minska textstorleken för bättre anpassning */
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        box-sizing: border-box; /* Se till att padding inte påverkar knapparnas bredd */
+    }
+
+/* Miss-knapp (vit med svart ram) */
+.miss {
+    background-color: white;
+    color: white;
+    border: 1px solid black;
+}
+
+
+.darkBlue {
+    background-color: #112A46;
+    color: white;
+    border: 1px solid white;
+}
+
+/* +1 Single (grön knapp med vit text och svart ram) */
+.uncommon {
+    background-color: #BDEEB6;
+    color: #1EFF00;
+    border: 1px solid #228b22;
+}
+
+/* +2 Double (blå knapp med vit text och blå ram) */
+.rare {
+    background-color: #A2C7EA;
+    color: #0070DD;
+    border: 1px solid #2f4f99;
+}
+
+/* +3 Triple (lila knapp med vit text och lila ram) */
+.epic {
+    background-color: #E4CBF5;
+    color: #A335EE;
+    border: 1px solid #663399;
+}
+
+/* Bullseye (beige/orange knapp med svart text och orange ram) */
+.legendary {
+    background-color: #FBEBDB;
+    color: #FF8000;
+    border: 1px solid #ff8c00;
+    animation: pulse-shadow 1s ease-in infinite; /* Applicera pulserande skugga-animation */
+}
+
+/* Effekt när man håller över knapparna */
+.buttons button:hover {
+    opacity: 0.9;
+    transform: scale(1.05); /* Gör knappen något större vid hover */
+}
+
+/* Effekt när man trycker på knappen */
+.buttons button:active {
+    background-color: #ddd; /* Ljusare bakgrundsfärg när knappen trycks */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Skugga för tryck-effekt */
+    transform: translateY(2px); /* Gör att knappen verkar tryckas ner */
+}
 
 
 
+.checkboxPlayer {
+    background-color: #E4CBF5;
+    color: #A335EE;
+    border: 1px solid #663399;
+}
 
 
 
@@ -400,5 +434,83 @@ img {
     100% {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+
+
+/* MEDIA */
+
+@media (max-width: 480px) {
+    /* Minska padding och marginaler för små skärmar */
+    .container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    /* Anpassa form- och poängcontainer för mobil */
+    .inputFields {
+        min-width: 100%; /* Gör att de tar upp hela skärmens bredd */
+        padding: 15px; /* Minska padding något */
+    }
+
+   
+    /* Anpassa textstorlekar */
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 1.5em; /* Justera rubrikstorlekar */
+    }
+
+    p, label, li {
+        font-size: 14px; /* Mindre textstorlek för bättre läsbarhet på mobil */
+    }
+
+    /* Justera knappar */
+    .buttons button {
+        font-size: 16px; /* Mindre textstorlek på små skärmar */
+        height: 48px; /* Lite mindre höjd */
+    }
+
+    /* Minska kortens storlek */
+    .card {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    /* Minska padding och fontstorlek i player-list */
+    .player-item {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Justera animation */
+    .winnerMessage {
+        font-size: 1.5em; /* Minska storleken på animations-texten */
+    }
+}
+@media (max-width: 320px) {
+    /* Ytterligare anpassning för de minsta skärmarna */
+    .container {
+        padding: 5px;
+    }
+
+    .inputFields {
+        padding: 10px;
+    }
+
+    .buttons button {
+        height: 40px; /* Ytterligare justering för små skärmar */
+        font-size: 16px;
+    }
+
+    .winnerMessage {
+        font-size: 1.2em;
+    }
+
+    /* Anpassa eventuella bilder */
+    img {
+        width: 100%; /* Full bredd på små skärmar */
+        height: auto; /* Behåll bildens proportioner */
     }
 }
