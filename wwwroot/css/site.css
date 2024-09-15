@@ -1,18 +1,20 @@
-﻿/* Ställ in Calibri som standardfont för hela dokumentet */
+﻿
+
+/* Ställ in Calibri som standardfont för hela dokumentet */
 html, body {
     width: 320px;
     max-width: 100%;
     padding: 0 10px; /* Add 10px padding on the left and right */
-    margin: 0;
-   
+    margin: 0;   
     box-sizing: border-box; /* För att säkerställa att padding och border inkluderas i elementens bredd */
     background-color: #ACC8E5;
 }
+
 main {
     display: flex;
     justify-content: center;
     align-items: center;
-   
+    min-height: 100vh; /* Se till att main täcker hela visningshöjden */
 }
 /* Ställ in Calibri för rubriker */
 h1, h2, h3, h4, h5, h6, label, li, ul, p, div {
@@ -35,15 +37,14 @@ p {
 
 /* Grundlayout för containern */
 .container {
-    max-width: 320px; /* use max-width only */
-    width: 100%; /* set width to 100% to allow full-width behavior */
+    max-width: 320px;
+    width: 100%;
     display: flex;
-    flex-direction: column; /* to stack elements vertically */
+    flex-direction: column;
     justify-content: center;
-    padding: 10px; /* add padding to create space on both sides */
+    padding: 10px;
+    box-sizing: border-box; /* Se till att padding inte påverkar bredden */
 }
-
-
 
 
 
